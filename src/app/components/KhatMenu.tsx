@@ -23,6 +23,17 @@ function Menu({ pathname }: { pathname: string }) {
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const backdropPress = useRef(false);
+
+  function openMenu() {
+    const element = dialog.current;
+    if (!element) return;
+    // Open in the activation event, including a touch pointer release.
+    if (!element.open) element.showModal();
+    backdropPress.current = false;
+    setOpen(true);
+  }
 
   useEffect(() => {
     const element = dialog.current;
@@ -30,7 +41,7 @@ function Menu({ pathname }: { pathname: string }) {
     const triggerElement = trigger.current;
     const scrollY = window.scrollY;
     const original = { position: document.body.style.position, top: document.body.style.top, width: document.body.style.width };
-    element.showModal();
+    if (!element.open) element.showModal();
     document.body.style.position = "fixed";
     document.body.style.top = `-${scrollY}px`;
     document.body.style.width = "100%";
@@ -44,10 +55,26 @@ function Menu({ pathname }: { pathname: string }) {
 
   return (
     <>
-      <button ref={trigger} type="button" className="menu-trigger glass" aria-label="باز کردن منو" aria-expanded={open} aria-controls="khat-drawer" onClick={() => setOpen(true)}>
+      <button ref={trigger} type="button" className="menu-trigger glass" aria-label="باز کردن منو" aria-expanded={open} aria-controls="khat-drawer" style={{ touchAction: "manipulation" }} onClick={openMenu}
+        onPointerDown={event => {
+          if (event.isPrimary && event.pointerType !== "mouse") touchStart.current = { x: event.clientX, y: event.clientY };
+        }}
+        onPointerCancel={() => { touchStart.current = null; }}
+        onPointerUp={event => {
+          const start = touchStart.current;
+          touchStart.current = null;
+          if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) <= 10) openMenu();
+        }}>
         <span aria-hidden="true" className="hamburger"><i /><i /><i /></span>
       </button>
-      <dialog ref={dialog} id="khat-drawer" className="drawer" aria-label="منوی اصلی خط" onCancel={(event) => { event.preventDefault(); setOpen(false); }} onClick={(event) => { if (event.target === event.currentTarget) setOpen(false); }}
+      <dialog ref={dialog} id="khat-drawer" className="drawer" aria-label="منوی اصلی خط" style={{ pointerEvents: open ? "auto" : "none" }} onCancel={(event) => { event.preventDefault(); setOpen(false); }}
+        onPointerDown={event => { backdropPress.current = event.target === event.currentTarget; }}
+        onPointerCancel={() => { backdropPress.current = false; }}
+        onClick={event => {
+          // A release/compatibility click from the opening tap is not an outside tap.
+          if (backdropPress.current && event.target === event.currentTarget) setOpen(false);
+          backdropPress.current = false;
+        }}
         onKeyDown={(event) => {
           if (event.key !== "Tab") return;
           const controls = event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
