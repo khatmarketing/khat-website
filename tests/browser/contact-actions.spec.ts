@@ -11,6 +11,7 @@ test('all five configured contact actions render correct safe destinations and p
   ];
   const cards = page.locator('a.contact-card');
   await expect(cards).toHaveCount(5);
+  await expect(cards.locator('p')).toHaveCount(0);
   await expect(page.locator('[aria-disabled="true"]')).toHaveCount(0);
   // Exercise each click but intercept it before invoking an external app or sending traffic.
   await page.evaluate(() => {

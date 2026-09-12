@@ -2,14 +2,32 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { articles } from "@/lib/articles";
 
 export default function NewsRail({ limit, aboveFold = false }: { limit?: number; aboveFold?: boolean }) {
   const rail = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, scroll: 0, moved: false });
+  const frame = useRef<number | null>(null);
+  const progressValue = useRef(0);
   const [progress, setProgress] = useState(0);
   const items = Object.entries(articles).slice(0, limit);
+  useEffect(() => () => {
+    if (frame.current !== null) cancelAnimationFrame(frame.current);
+  }, []);
+  function updateProgress() {
+    if (frame.current !== null) return;
+    frame.current = requestAnimationFrame(() => {
+      frame.current = null;
+      const el = rail.current;
+      if (!el) return;
+      const next = Math.abs(el.scrollLeft) / Math.max(1, el.scrollWidth - el.clientWidth);
+      if (Math.abs(next - progressValue.current) > 0.005 || next === 0 || next === 1) {
+        progressValue.current = next;
+        setProgress(next);
+      }
+    });
+  }
   function endDrag(event: PointerEvent<HTMLDivElement>) {
     drag.current.active = false;
     event.currentTarget.dataset.dragging = "false";
@@ -18,7 +36,7 @@ export default function NewsRail({ limit, aboveFold = false }: { limit?: number;
   return (
     <div>
       <div ref={rail} className="news-rail" role="region" aria-label="خبرهای خط؛ برای مرور ورق بزنید" tabIndex={0}
-        onScroll={() => { const el = rail.current; if (el) setProgress(Math.abs(el.scrollLeft) / Math.max(1, el.scrollWidth - el.clientWidth)); }}
+        onScroll={updateProgress}
         onPointerDown={(event) => {
           drag.current.moved = false;
           if (event.pointerType !== "mouse" || event.button !== 0) return;

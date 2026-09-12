@@ -11,6 +11,7 @@ async function rotation(icon: Locator) {
 test('canonical logo, banners, shared footer fade and removed Home headline', async ({ page }) => {
   for (const route of ['/', '/news', '/partners', '/services/content-production', '/news/strong-brands']) {
     await page.goto(route);
+    await expect(page.locator('footer .khat-logo')).toHaveCount(0);
     for (const logo of await page.locator('header .khat-logo img, footer .khat-logo img').all()) {
       await expect(logo).toHaveAttribute('src', /khat-logo/);
       expect(await logo.evaluate((el: HTMLImageElement) => el.width / el.height)).toBe(1);
@@ -25,6 +26,20 @@ test('canonical logo, banners, shared footer fade and removed Home headline', as
       await expect(page.getByText('ایده تا بازار کنارتیم تا برند بزرگتر و هدفمندتری داشته باشی', { exact: true })).toHaveCount(0);
       await expect(page.locator('.home-hero h1')).toHaveCount(0);
     }
+  }
+});
+
+test('home service image cards use natural color interaction without orange chrome', async ({ page }) => {
+  await page.goto('/');
+  for (const card of await page.locator('.quick-service').all()) {
+    await expect.poll(() => card.evaluate(el => getComputedStyle(el).borderTopColor)).not.toBe('rgb(255, 106, 26)');
+    await card.hover();
+    await expect.poll(() => card.evaluate(el => getComputedStyle(el).borderTopColor)).not.toBe('rgb(255, 106, 26)');
+    expect(await card.evaluate(el => getComputedStyle(el).boxShadow)).toBe('none');
+    await card.focus();
+    await expect.poll(() => card.evaluate(el => getComputedStyle(el).borderTopColor)).not.toBe('rgb(255, 106, 26)');
+    await page.mouse.move(0, 0);
+    await card.evaluate(el => (el as HTMLElement).blur());
   }
 });
 
