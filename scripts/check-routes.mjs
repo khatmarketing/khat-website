@@ -10,7 +10,7 @@ for (const route of routes) {
   const response = await fetch(base + route);
   assert.equal(response.status, 200, route);
   const html = await response.text();
-  assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, `${route}: one h1`);
+  assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, route === "/" ? 0 : 1, `${route}: expected heading count`);
   assert.match(html, /id="main-content"/, `${route}: main landmark`);
   assert.match(html, /lang="fa" dir="rtl"/, `${route}: Persian RTL`);
   assert.match(html, /<title>[^<]+<\/title>/, `${route}: title`);
@@ -32,8 +32,7 @@ for (const url of assets) {
 for (const route of ['/missing-page', '/services/missing', '/services/toString', '/services/__proto__', '/news/missing', '/news/constructor']) {
   const response = await fetch(base + route);
   const html = await response.text();
-  // Next may stream a branded 404 with a 200 HTTP envelope; robots must still prevent indexing.
-  assert.ok(response.status === 404 || html.includes('noindex'), `${route}: not found`);
+  assert.equal(response.status, 404, `${route}: not found`);
   assert.match(html, /این صفحه روی خط نیست/, `${route}: branded recovery`);
   console.log(`PASS ${route} (not found, HTTP ${response.status})`);
 }

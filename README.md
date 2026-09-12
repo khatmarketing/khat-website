@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Khat Website — Mobile MVP
 
-## Getting Started
+Persian RTL agency website using Next.js 16.3.4, React 19, TypeScript, Tailwind 4, and the supplied Anjoman fonts. The mobile canvas remains capped at 430px. This release does not include a desktop redesign.
 
-First, run the development server:
+## Run locally
 
-```bash
+Use Node.js 24 (the validated version is 24.20.0), then:
+
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. On Windows PowerShell with script execution restricted, use `npm.cmd` instead of `npm`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verification
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sh
+npm run lint
+npm test
+npm run check:routes
+npm run test:browser
+npm run build
+```
 
-## Learn More
+Route and browser checks require a running server. Browser tests use the installed Google Chrome through Playwright, in isolated headless sessions; no personal browser profile is accessed. `QA_BROWSER_CHANNEL=msedge` selects an installed Edge instead. Reports and screenshots are written under `playwright-report/` and `test-results/` and are excluded from Git and ESLint.
 
-To learn more about Next.js, take a look at the following resources:
+To validate the production build:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+npm run build
+npm run start -- --port 3001
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+In a separate terminal, set `QA_BASE_URL=http://localhost:3001`, then run `npm run check:routes` and `npm run test:browser`. The suite covers every page at 320, 375, 390, and 430px, images, runtime diagnostics, RTL, navigation, drawer focus/history/dismissal, short screens, native touch input, mouse drag, and enlarged text/reduced motion.
 
-## Deploy on Vercel
+## Approved contact actions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The exact owner-supplied destinations are stored in `src/lib/contact.ts`. Environment variables no longer override these values. Rebuild after any approved destination change.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Phone: `tel:09001040402`
+- WhatsApp: `https://wa.me/message/O3N4D4VFVTMBP1`
+- Telegram: `https://t.me/pezhmandavoudi`
+- E-mail: `mailto:Khatmarketing.group@gmail.com`
+- Instagram: `https://www.instagram.com/khat.marketing?stkn=MWVxYnc1eGN3YXl6bQ%3D%3D&utm_source=qr`
+
+All browser tests run together without fixture environment variables. Contact clicks are intercepted during QA to verify the exact destination without launching external applications. Physical-device app handoff depends on the installed/configured apps.
+
+Contact icons rotate once through 1080 degrees in 900ms on mouse entry, keyboard focus, or touch/pen press. Reduced motion disables rotation. Native link navigation is not delayed for animation.
+
+## Content and routes
+
+- Main pages: `/`, `/about`, `/services`, `/news`, `/partners`, `/contact`.
+- Five services: `src/lib/services.ts`.
+- Four news entries: `src/lib/articles.ts`.
+- Detail routes use static parameters and return 404 for unknown slugs.
+- Existing partner names are preserved as text because their logo files were absent. Confirm the client list and supply approved logos before replacing these text treatments.
+
+See `RELEASE-AUDIT.md` for findings, verification results, unresolved business inputs, and the previous pass's visual changes that need brand-owner review.

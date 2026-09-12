@@ -10,7 +10,6 @@ export default function Home() {
         <div className="home-hero-shade" />
         <div className="home-hero-copy">
           <span className="eyebrow" dir="ltr">KHAT / CREATIVE GROWTH</span>
-          <h1 className="mt-5 text-[clamp(1.65rem,7vw,1.9rem)] font-extrabold leading-[1.9]">ایده تا بازار کنارتیم تا برند بزرگتر و هدفمندتری داشته باشی</h1>
           <Link href="/contact" className="cta mt-7">مشاوره رایگان <span aria-hidden="true">←</span></Link>
         </div>
       </section>

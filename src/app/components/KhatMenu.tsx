@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import KhatLogo from "./KhatLogo";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -15,6 +16,10 @@ const navigation = [
 
 export default function KhatMenu() {
   const pathname = usePathname();
+  return <Menu key={pathname} pathname={pathname} />;
+}
+
+function Menu({ pathname }: { pathname: string }) {
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -42,10 +47,23 @@ export default function KhatMenu() {
       <button ref={trigger} type="button" className="menu-trigger glass" aria-label="باز کردن منو" aria-expanded={open} aria-controls="khat-drawer" onClick={() => setOpen(true)}>
         <span aria-hidden="true" className="hamburger"><i /><i /><i /></span>
       </button>
-      <dialog ref={dialog} id="khat-drawer" className="drawer" aria-label="منوی اصلی خط" onCancel={(event) => { event.preventDefault(); setOpen(false); }} onClick={(event) => { if (event.target === event.currentTarget) setOpen(false); }}>
+      <dialog ref={dialog} id="khat-drawer" className="drawer" aria-label="منوی اصلی خط" onCancel={(event) => { event.preventDefault(); setOpen(false); }} onClick={(event) => { if (event.target === event.currentTarget) setOpen(false); }}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          const controls = event.currentTarget.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+          const first = controls[0];
+          const last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }}>
         <div className="drawer-panel">
           <div className="flex items-center justify-between gap-4">
-            <Link href="/" onClick={() => setOpen(false)} className="text-3xl font-extrabold" aria-label="خط؛ صفحه اصلی">خط</Link>
+            <Link href="/" onClick={() => setOpen(false)} className="text-3xl font-extrabold" aria-label="خط؛ صفحه اصلی"><KhatLogo /></Link>
             <button type="button" className="icon-button" aria-label="بستن منو" onClick={() => setOpen(false)} autoFocus><span aria-hidden="true">×</span></button>
           </div>
           <span className="signature my-6" aria-hidden="true" />

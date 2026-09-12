@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRef, useState, type PointerEvent } from "react";
 import { articles } from "@/lib/articles";
 
-export default function NewsRail({ limit }: { limit?: number }) {
+export default function NewsRail({ limit, aboveFold = false }: { limit?: number; aboveFold?: boolean }) {
   const rail = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, scroll: 0, moved: false });
   const [progress, setProgress] = useState(0);
@@ -20,7 +20,6 @@ export default function NewsRail({ limit }: { limit?: number }) {
       <div ref={rail} className="news-rail" role="region" aria-label="خبرهای خط؛ برای مرور ورق بزنید" tabIndex={0}
         onScroll={() => { const el = rail.current; if (el) setProgress(Math.abs(el.scrollLeft) / Math.max(1, el.scrollWidth - el.clientWidth)); }}
         onPointerDown={(event) => {
-          console.info("QA pointer down", event.pointerType, event.clientX);
           drag.current.moved = false;
           if (event.pointerType !== "mouse" || event.button !== 0) return;
           drag.current = { active: true, startX: event.clientX, scroll: event.currentTarget.scrollLeft, moved: false };
@@ -28,7 +27,6 @@ export default function NewsRail({ limit }: { limit?: number }) {
         onPointerMove={(event) => {
           if (!drag.current.active) return;
           const delta = event.clientX - drag.current.startX;
-          console.info("QA pointer move", delta, event.currentTarget.scrollLeft);
           if (Math.abs(delta) > 7) {
             drag.current.moved = true;
             event.currentTarget.setPointerCapture(event.pointerId);
@@ -48,10 +46,10 @@ export default function NewsRail({ limit }: { limit?: number }) {
           if (event.key === "Home") { event.preventDefault(); el.scrollLeft = 0; }
           if (event.key === "End") { event.preventDefault(); el.scrollLeft = -el.scrollWidth; }
         }}>
-        {items.map(([slug, article]) => (
+        {items.map(([slug, article], index) => (
           <Link key={slug} href={`/news/${slug}`} aria-label={article.title} draggable={false} className="news-card neon-ring">
             <article className="h-full">
-              <div className="news-card-image"><Image src={article.image} alt="" fill sizes="300px" draggable={false} className="object-cover object-[center_35%]" /></div>
+              <div className="news-card-image"><Image src={article.image} alt="" fill sizes="300px" loading={aboveFold && index === 0 ? "eager" : "lazy"} draggable={false} className="object-cover object-[center_35%]" /></div>
               <div className="p-5"><div className="flex flex-wrap justify-between gap-2 text-xs text-white/65"><span>{article.category}</span><span>{article.date}</span></div>
                 <h2 className="mt-3 text-lg font-bold leading-8">{article.title}</h2>
                 <p className="mt-2 text-sm leading-7 text-white/70">{article.description}</p>

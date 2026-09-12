@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Link from "next/link";
+import KhatLogo from "./components/KhatLogo";
 import KhatMenu from "./components/KhatMenu";
 import KhatFooter from "./components/KhatFooter";
+import NeonFeedback from "./components/NeonFeedback";
 import "./globals.css";
 
 const anjoman = localFont({
@@ -25,9 +27,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="fa" dir="rtl" data-scroll-behavior="smooth" className={anjoman.variable}>
       <body>
+        <NeonFeedback />
         <div className="site-shell">
           <a href="#main-content" className="skip-link">رفتن به محتوای اصلی</a>
-          <header className="site-header"><KhatMenu /><Link href="/" className="header-brand" aria-label="خط؛ صفحه اصلی">خط</Link><Link href="/contact" className="header-contact glass">تماس</Link></header>
+          <header className="site-header"><KhatMenu /><Link href="/" className="header-brand" aria-label="خط؛ صفحه اصلی"><KhatLogo /></Link><Link href="/contact" className="header-contact glass neon-ring">تماس</Link></header>
           {children}
           <KhatFooter />
         </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ContactAction from "../components/ContactAction";
 import PageHero from "../components/PageHero";
 import { contactDetails, contactLinks } from "@/lib/contact";
 
@@ -19,8 +20,8 @@ export default function ContactPage() {
       <section className="content-section pt-0" aria-label="راه‌های ارتباط با خط">
         {missing.length > 0 && <p className="mb-5 text-sm leading-7 text-white/65">راه‌های ارتباطی در حال تکمیل‌اند. گزینه‌های غیرفعال به‌زودی در دسترس قرار می‌گیرند.</p>}
         <div className="space-y-3">{items.map((item) => {
-          const content = <><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/20"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true"><path d={icons[item.id]} /></svg></span><div className="min-w-0"><h2 className="text-lg font-bold">{item.title}</h2><p className="mt-2 text-sm leading-7 text-white/65">{item.href ? item.description : "به‌زودی"}</p></div>{item.href && <span className="mr-auto" aria-hidden="true">←</span>}</>;
-          return item.href ? <a key={item.id} href={item.href} className="contact-card neon-ring" target={item.href.startsWith("https") ? "_blank" : undefined} rel={item.href.startsWith("https") ? "noopener noreferrer" : undefined}>{content}</a> : <div key={item.id} className="contact-card border border-white/15" aria-disabled="true">{content}</div>;
+          const content = <><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/20"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="contact-icon h-6 w-6" aria-hidden="true"><path d={icons[item.id]} /></svg></span><div className="min-w-0"><h2 className="text-lg font-bold">{item.title}</h2><p className="mt-2 text-sm leading-7 text-white/65">{item.href ? item.description : "به‌زودی"}</p></div>{item.href && <span className="mr-auto" aria-hidden="true">←</span>}</>;
+          return item.href ? <ContactAction key={item.id} href={item.href} className="contact-card neon-ring" target={item.href.startsWith("https") ? "_blank" : undefined} rel={item.href.startsWith("https") ? "noopener noreferrer" : undefined}>{content}</ContactAction> : <div key={item.id} className="contact-card border border-white/15" aria-disabled="true">{content}</div>;
         })}</div>
       </section>
     </main>
