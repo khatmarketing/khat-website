@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import ContactAction from "../components/ContactAction";
 import PageHero from "../components/PageHero";
 import { contactDetails, contactLinks } from "@/lib/contact";
+import { createMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "به خط زنگ بزن", description: "برای مشاوره رایگان و گفت‌وگو درباره مسیر رشد برندتان با خط در تماس باشید." };
+export const metadata: Metadata = createMetadata({
+  title: "به خط زنگ بزن",
+  description: "برای مشاوره رایگان و گفت‌وگو درباره مسیر رشد برندتان با خط در تماس باشید.",
+  image: "/images/contact.png",
+  path: "/contact",
+});
 const icons: Record<string, string> = {
   phone: "M7 3H4a1 1 0 0 0-1 1c0 9.4 7.6 17 17 17a1 1 0 0 0 1-1v-3l-5-2-2 2a14 14 0 0 1-7-7l2-2-2-5Z",
   whatsapp: "M20 11.5a8 8 0 0 1-12 7L3 20l1.5-5A8 8 0 1 1 20 11.5ZM8 8c.5 4 3 6.5 7 7",

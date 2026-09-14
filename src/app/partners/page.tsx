@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import PageHero from "../components/PageHero";
+import { createMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "کیا با خط کار کردن", description: "همراهان خط در مسیر بازاریابی، برندینگ و رشد." };
+export const metadata: Metadata = createMetadata({
+  title: "کیا با خط کار کردن",
+  description: "همراهان خط در مسیر بازاریابی، برندینگ و رشد.",
+  image: "/images/partners.png",
+  path: "/partners",
+});
 const partners = ["Digikala", "Snapp", "Tapsi", "Rooma", "Bazr", "Samsung", "Zarinpal", "Esalat", "Aparat", "CafeBazaar", "Namava", "Alibaba"];
 export default function PartnersPage() {
   return (

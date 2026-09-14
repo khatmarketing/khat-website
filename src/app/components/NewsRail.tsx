@@ -4,14 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { articles } from "@/lib/articles";
+import type { ManagedArticle } from "@/lib/wordpress";
 
-export default function NewsRail({ limit, aboveFold = false }: { limit?: number; aboveFold?: boolean }) {
+type RailArticle = ManagedArticle;
+
+function fallbackArticles(): RailArticle[] {
+  return Object.entries(articles).map(([slug, article]) => ({
+    slug,
+    title: article.title,
+    description: article.description,
+    image: article.image,
+    date: article.date,
+    category: article.category,
+    paragraphs: [...article.paragraphs],
+  }));
+}
+
+export default function NewsRail({ limit, aboveFold = false, items }: { limit?: number; aboveFold?: boolean; items?: RailArticle[] }) {
   const rail = useRef<HTMLDivElement>(null);
   const drag = useRef({ active: false, startX: 0, scroll: 0, moved: false });
   const frame = useRef<number | null>(null);
   const progressValue = useRef(0);
   const [progress, setProgress] = useState(0);
-  const items = Object.entries(articles).slice(0, limit);
+  const railItems = (items || fallbackArticles()).slice(0, limit);
   useEffect(() => () => {
     if (frame.current !== null) cancelAnimationFrame(frame.current);
   }, []);
@@ -64,8 +79,8 @@ export default function NewsRail({ limit, aboveFold = false }: { limit?: number;
           if (event.key === "Home") { event.preventDefault(); el.scrollLeft = 0; }
           if (event.key === "End") { event.preventDefault(); el.scrollLeft = -el.scrollWidth; }
         }}>
-        {items.map(([slug, article], index) => (
-          <Link key={slug} href={`/news/${slug}`} aria-label={article.title} draggable={false} className="news-card neon-ring">
+        {railItems.map((article, index) => (
+          <Link key={article.slug} href={`/news/${article.slug}`} aria-label={article.title} draggable={false} className="news-card neon-ring">
             <article className="h-full">
               <div className="news-card-image"><Image src={article.image} alt="" fill sizes="300px" loading={aboveFold && index === 0 ? "eager" : "lazy"} draggable={false} className="object-cover object-[center_35%]" /></div>
               <div className="p-5"><div className="flex flex-wrap justify-between gap-2 text-xs text-white/65"><span>{article.category}</span><span>{article.date}</span></div>

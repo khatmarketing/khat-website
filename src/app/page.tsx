@@ -1,8 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import NewsRail from "./components/NewsRail";
+import { createMetadata } from "@/lib/seo";
+import { getWordPressArticles } from "@/lib/wordpress";
 
-export default function Home() {
+export const metadata = createMetadata({ path: "/" });
+
+export default async function Home() {
+  const wpArticles = await getWordPressArticles();
   return (
     <main id="main-content" tabIndex={-1}>
       <section className="home-hero">
@@ -10,7 +15,7 @@ export default function Home() {
         <div className="home-hero-shade" />
         <div className="home-hero-copy">
           <span className="eyebrow" dir="ltr">KHAT / CREATIVE GROWTH</span>
-          <Link href="/contact" className="cta mt-7">مشاوره رایگان <span aria-hidden="true">←</span></Link>
+          <Link href="/contact" className="cta mt-7" data-analytics-event="consultation_click">مشاوره رایگان <span aria-hidden="true">←</span></Link>
         </div>
       </section>
       <section className="content-section" aria-label="خدمات منتخب خط">
@@ -26,9 +31,8 @@ export default function Home() {
       </section>
       <section className="pb-14" aria-labelledby="latest-news">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-6"><h2 id="latest-news" className="section-title">آخرین اخبار</h2><Link href="/news" className="inline-flex min-h-11 items-center rounded-full border border-white/20 px-4 text-sm">همه اخبار</Link></div>
-        <NewsRail limit={3} />
+        <NewsRail limit={3} items={wpArticles || undefined} />
       </section>
     </main>
   );
 }
-

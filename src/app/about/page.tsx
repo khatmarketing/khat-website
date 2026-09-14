@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+import { createMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "درباره خط",
+  description: "خط، همراه برندها از شکل‌گیری ایده تا اجرای مسیر رشد.",
+  image: "/images/about.png",
+  path: "/about",
+});
+
 const teamMembers = [
   { name: "عضو تیم", role: "سمت" },
   { name: "عضو تیم", role: "سمت" },
