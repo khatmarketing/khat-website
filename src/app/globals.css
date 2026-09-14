@@ -54,13 +54,16 @@ main { min-height: 55svh; }
 .news-progress::-moz-progress-bar { background: var(--accent); border-radius: 99px; }
 .contact-card { display: flex; align-items: center; gap: 16px; min-height: 112px; padding: 20px; border-radius: 28px; background: #111; }
 .contact-card[aria-disabled="true"] { color: #bbb; }
-@media (hover: hover) { .neon-ring:hover { border-color: var(--accent); box-shadow: 0 0 18px #ff6a1a30, inset 0 0 12px #ff6a1a0a; } .drawer-link:hover { color: var(--accent); } .cta:hover { background: #ff6a1a18; box-shadow: 0 0 22px #ff6a1a20; } }
+@media (hover: hover) { .neon-ring:hover { border-color: var(--accent); box-shadow: 0 0 18px #ff6a1a30, inset 0 0 12px #ff6a1a0a; } .drawer-link:hover { color: var(--accent); } .cta:hover { background: #ff6a1a18; box-shadow: 0 0 22px #ff6a1a20; } .quick-service:hover .quick-service-bw { opacity: 0; } .quick-service:hover .quick-service-color { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 
 .home-hero { position: relative; min-height: 460px; padding: calc(160px + env(safe-area-inset-top)) 24px 54px; display: flex; align-items: flex-end; overflow: hidden; }
 .home-hero-shade { position: absolute; inset: 0; background: linear-gradient(0deg,#080808 0%,#080808b3 25%,#08080820 65%); }
 .home-hero-copy { position: relative; z-index: 1; max-width: 340px; }
-.quick-service { position: relative; display: block; aspect-ratio: 948 / 588; border-radius: 16px; overflow: hidden; border: 1px solid #ffffff26; -webkit-tap-highlight-color: transparent; }
+.quick-service { position: relative; display: block; aspect-ratio: 948 / 588; border-radius: 16px; overflow: hidden; border: 1px solid #ffffff26; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.quick-service img { pointer-events: none; }
+.quick-service:active .quick-service-bw, .quick-service:focus-visible .quick-service-bw { opacity: 0; }
+.quick-service:active .quick-service-color, .quick-service:focus-visible .quick-service-color { opacity: 1; }
 .quick-service:active, .quick-service:focus-visible, .quick-service[data-pressed="true"] { border-color: #ffffff26; box-shadow: none; outline-color: #ffffff80; }
 .service-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
 .service-card { display: flex; flex-direction: column; min-width: 0; border-radius: 22px; overflow: hidden; background: #101010; }

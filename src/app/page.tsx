@@ -21,9 +21,9 @@ export default async function Home() {
       <section className="content-section" aria-label="خدمات منتخب خط">
         <div className="grid grid-cols-2 gap-3">
           {[["advertising", "تبلیغات", "advertising"], ["content-production", "تولید محتوا", "content"]].map(([slug, label, asset]) => (
-            <Link href={`/services/${slug}`} key={slug} aria-label={label} className="quick-service group">
-              <Image src={`/images/home-services/${asset}-bw.png`} alt={label} fill sizes="(max-width: 430px) 44vw, 185px" className="object-cover transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0 group-active:opacity-0" />
-              <Image src={`/images/home-services/${asset}-color.png`} alt="" fill sizes="(max-width: 430px) 44vw, 185px" className="object-cover opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 group-active:opacity-100" />
+            <Link href={`/services/${slug}`} key={slug} aria-label={label} className="quick-service">
+              <Image src={`/images/home-services/${asset}-bw.png`} alt={label} fill sizes="(max-width: 430px) 44vw, 185px" className="quick-service-bw object-cover transition-opacity duration-200" />
+              <Image src={`/images/home-services/${asset}-color.png`} alt="" fill sizes="(max-width: 430px) 44vw, 185px" className="quick-service-color object-cover opacity-0 transition-opacity duration-200" />
             </Link>
           ))}
         </div>
