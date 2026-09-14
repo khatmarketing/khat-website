@@ -82,7 +82,7 @@ export default function NewsRail({ limit, aboveFold = false, items }: { limit?: 
         {railItems.map((article, index) => (
           <Link key={article.slug} href={`/news/${article.slug}`} aria-label={article.title} draggable={false} className="news-card neon-ring">
             <article className="h-full">
-              <div className="news-card-image"><Image src={article.image} alt="" fill sizes="300px" loading={aboveFold && index === 0 ? "eager" : "lazy"} draggable={false} className="object-cover object-[center_35%]" /></div>
+              <div className="news-card-image"><Image src={article.image} alt="" fill sizes="300px" {...(aboveFold && index === 0 ? { preload: true } : { loading: "lazy" as const })} draggable={false} className="object-cover object-[center_35%]" /></div>
               <div className="p-5"><div className="flex flex-wrap justify-between gap-2 text-xs text-white/65"><span>{article.category}</span><span>{article.date}</span></div>
                 <h2 className="mt-3 text-lg font-bold leading-8">{article.title}</h2>
                 <p className="mt-2 text-sm leading-7 text-white/70">{article.description}</p>

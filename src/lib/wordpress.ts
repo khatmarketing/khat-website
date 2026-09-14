@@ -58,6 +58,9 @@ export type ManagedWorkshop = {
 
 const wordpressUrl = process.env.WORDPRESS_API_URL?.replace(/\/$/, "");
 const revalidateSeconds = Number(process.env.WORDPRESS_REVALIDATE_SECONDS || 300);
+const publicFetchEnabled = process.env.WORDPRESS_ENABLE_PUBLIC_FETCH === "true";
+const readTimeoutMs = Number(process.env.WORDPRESS_FETCH_TIMEOUT_MS || 350);
+const writeTimeoutMs = Number(process.env.WORDPRESS_WRITE_TIMEOUT_MS || 5000);
 
 function authHeader() {
   const username = process.env.WORDPRESS_APPLICATION_USERNAME;
@@ -73,7 +76,7 @@ function endpoint(path: string) {
 }
 
 export function isWordPressConfigured() {
-  return Boolean(wordpressUrl);
+  return Boolean(wordpressUrl && publicFetchEnabled);
 }
 
 export function wordpressAdminUrl() {
@@ -91,6 +94,7 @@ export async function wpFetch<T>(
 ) {
   const url = endpoint(path);
   if (!url) return null;
+  if (!options.auth && !publicFetchEnabled) return null;
 
   const headers = new Headers(options.headers);
   if (options.auth) {
@@ -99,17 +103,24 @@ export async function wpFetch<T>(
     headers.set("authorization", authorization);
   }
 
+  const isWrite = Boolean(options.method && options.method.toUpperCase() !== "GET");
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), isWrite ? writeTimeoutMs : readTimeoutMs);
+
   try {
     const response = await fetch(url, {
       method: options.method || "GET",
       body: options.body,
       headers,
+      signal: controller.signal,
       next: options.method ? undefined : { revalidate: revalidateSeconds },
     });
     if (!response.ok) return null;
     return (await response.json()) as T;
   } catch {
     return null;
+  } finally {
+    clearTimeout(timeout);
   }
 }
 

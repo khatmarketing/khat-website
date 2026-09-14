@@ -11,7 +11,7 @@ export default async function Home() {
   return (
     <main id="main-content" tabIndex={-1}>
       <section className="home-hero">
-        <Image src="/images/home-hero-v2.png" alt="" fill loading="eager" fetchPriority="high" sizes="(max-width: 430px) 100vw, 430px" className="object-cover" />
+        <Image src="/images/home-hero-v2.png" alt="" fill preload sizes="(max-width: 430px) 100vw, 430px" className="object-cover" />
         <div className="home-hero-shade" />
         <div className="home-hero-copy">
           <span className="eyebrow" dir="ltr">KHAT / CREATIVE GROWTH</span>
